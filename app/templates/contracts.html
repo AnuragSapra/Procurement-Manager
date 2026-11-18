@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Contracts · Corvo{% endblock %}
+{% block body %}
+<h1>Contracts</h1>
+<p class="lede">
+  Plants:
+  {% for code, name in plants.items() %}{{ code }} {{ name }}{% if not loop.last %}, {% endif %}{% endfor %}.
+</p>
+{% if who.role == 'buyer' %}
+<form method="post" action="/contracts" enctype="multipart/form-data" class="stack">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label for="file">Contract PDF</label>
+  <input id="file" name="file" type="file" accept="application/pdf,.pdf" data-primary-field required>
+  <button class="primary" type="submit">Add contract</button>
+</form>
+{% endif %}
+<table>
+  <thead>
+    <tr>
+      <th>Contract</th>
+      <th>Supplier</th>
+      <th>Term</th>
+      <th>Cap</th>
+      <th>Consumed</th>
+      <th>Items</th>
+      <th>Source</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for contract in contracts %}
+    <tr>
+      <td>{{ contract.id }}</td>
+      <td>{{ contract.supplier_id }} {{ contract.supplier_name }}</td>
+      <td>{{ contract.start }} – {{ contract.end }}</td>
+      <td>{{ contract.cap }}</td>
+      <td>{{ contract.consumed }}</td>
+      <td>{{ contract.lines }}</td>
+      <td>{{ contract.source }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

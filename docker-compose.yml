@@ -1,0 +1,15 @@
+services:
+  corvo:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      CORVO_SECRET: corvo-dev
+      CORVO_ENV: local
+      CORVO_DATA: /srv/data
+      CORVO_DB: /srv/db/corvo.db
+    volumes:
+      - corvo-db:/srv/db
+
+volumes:
+  corvo-db:

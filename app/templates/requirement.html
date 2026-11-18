@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ card.group_id }} · Corvo{% endblock %}
+{% block body %}
+<p class="quiet"><a href="/queue">Queue</a></p>
+<h1>{{ card.group_id }}</h1>
+<p class="lede">{{ card.decision }} · {{ card.route }} · {{ card.value|inr }} · policy {{ card.policy_version }} · {{ card.status }}</p>
+<p>{{ card.reason }}</p>
+{% if card.po_id %}<p>PO {{ card.po_id }}</p>{% endif %}
+{% if card.supplier_id %}
+<p>Supplier {{ card.supplier_id }} {{ card.supplier_name }}{% if card.unit_price %} at {{ card.unit_price }}{% endif %}</p>
+{% endif %}
+{% if card.suggestions %}
+<p>Suggested {{ card.suggestions }}</p>
+{% endif %}
+<table>
+  <thead>
+    <tr>
+      <th class="keep">PR</th>
+      <th>Line</th>
+      <th class="keep">When</th>
+      <th>Description</th>
+      <th class="keep">Qty</th>
+      <th class="keep">Need by</th>
+      <th>Urgency</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for line in card.lines %}
+    <tr>
+      <td class="keep">{{ line.pr_no }}</td>
+      <td>{{ line.pr_line }}</td>
+      <td class="keep">{{ line.line_created }}</td>
+      <td>{{ line.description }}</td>
+      <td class="keep">{{ line.quantity }} {{ line.uom|unit }}</td>
+      <td class="keep">{{ line.need_by }}</td>
+      <td>{{ line.urgency }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if card.lines[0].override_comment %}
+<p>Override: {{ card.lines[0].override_comment }}</p>
+{% endif %}
+{% if who.role == 'buyer' and not card.own %}
+<form method="post" action="/queue/{{ card.batch_id }}/{{ card.group_id }}/approve">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <button class="primary" type="submit">Approve</button>
+</form>
+<form method="post" action="/queue/{{ card.batch_id }}/{{ card.group_id }}/override" class="stack secondary">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label for="comment">Override comment</label>
+  <textarea id="comment" name="comment" required></textarea>
+  <button type="submit">Override</button>
+</form>
+{% elif card.own %}
+<p>You raised this requirement, so you cannot release it.</p>
+{% endif %}
+{% endblock %}

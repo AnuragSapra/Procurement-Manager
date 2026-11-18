@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Corvo{% endblock %}</title>
+  <link rel="stylesheet" href="/static/app.css?v=2">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <a href="{% if who %}/chat{% else %}/who{% endif %}">Corvo</a>
+      <span>Purchase requisitions</span>
+    </div>
+    {% if who %}
+    <nav>
+      <a href="/chat">Chat</a>
+      <a href="/batch">Batch</a>
+      <a href="/queue">Queue</a>
+      <a href="/policy">Policy</a>
+      <a href="/contracts">Contracts</a>
+      <a href="/preferred">Preferred</a>
+      {% if who.role == 'buyer' %}<a href="/audit">Audit</a>{% endif %}
+    </nav>
+    <form class="who" method="post" action="/sign-out">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <span>{{ who.name }}</span>
+      <button type="submit">Sign out</button>
+    </form>
+    {% endif %}
+  </header>
+  {% if flash %}
+  <p class="flash">{{ flash }}</p>
+  {% endif %}
+  <main>
+    {% block body %}{% endblock %}
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

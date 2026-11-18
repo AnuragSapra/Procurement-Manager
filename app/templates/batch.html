@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Batch · Corvo{% endblock %}
+{% block body %}
+<h1>Process a batch</h1>
+<p class="lede">Upload a PR CSV. Clubbing and ceilings stay inside this file. The sample batch is already in the queue. A buyer runs the file.</p>
+{% if who.role == 'buyer' %}
+<form method="post" action="/batch" enctype="multipart/form-data" class="stack">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label for="file">CSV file</label>
+  <input id="file" name="file" type="file" accept=".csv,text/csv" data-primary-field required>
+  <button class="primary" type="submit">Run</button>
+</form>
+{% else %}
+<p>A requester can raise a line in chat. A buyer runs a batch file.</p>
+{% endif %}
+{% if summary %}
+<section class="card">
+  <h2>{{ summary.lines }} lines</h2>
+  <ul>
+    {% for route, count in summary.counts.items() %}
+    <li>{{ route }}: {{ count }}</li>
+    {% endfor %}
+  </ul>
+  <p><a href="/api/batches/{{ summary.batch_id }}?format=csv">Download decisions</a></p>
+  <p><a href="/queue">Open the queue</a></p>
+</section>
+{% endif %}
+{% endblock %}

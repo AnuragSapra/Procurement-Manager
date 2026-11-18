@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Preferred suppliers · Corvo{% endblock %}
+{% block body %}
+<h1>Preferred suppliers</h1>
+<p class="lede">Top three Active suppliers as of a date, under policy {{ policy_version }}. Recency, purchase count, a contract, on-time and quality make the order.</p>
+<form method="get" action="/preferred" class="stack">
+  <label for="as_of">As of</label>
+  <input id="as_of" name="as_of" type="date" value="{{ as_of }}" data-primary-field required>
+  <button class="primary" type="submit">Show</button>
+</form>
+<p><a href="/api/preferred-suppliers.csv?as_of={{ as_of }}">Download CSV</a></p>
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Rank</th>
+      <th>Supplier</th>
+      <th>Reference price</th>
+      <th>Why</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+    <tr>
+      <td class="keep">{{ row.item_code }}</td>
+      <td class="keep">{{ row.rank }}</td>
+      <td><span class="keep">{{ row.supplier_id }}</span> {{ row.supplier_name }}</td>
+      <td class="keep">{{ row.reference_price }}</td>
+      <td class="quiet">{{ row.why }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

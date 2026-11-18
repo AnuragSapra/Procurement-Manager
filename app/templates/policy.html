@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Policy · Corvo{% endblock %}
+{% block body %}
+<h1>Policy {{ current.version }}</h1>
+<p class="lede">Effective {{ current.effective_from }}. A change stays as a preview until a buyer approves it.</p>
+<ul>
+  {% for line in current_lines %}
+  <li>{{ line }}</li>
+  {% endfor %}
+</ul>
+<form method="post" action="/policy/preview" enctype="multipart/form-data" class="stack">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label for="change">Describe the change, or paste a policy JSON</label>
+  <textarea id="change" name="change" data-primary-field placeholder="Effective 1 Nov 2026, the spot PO limit is 50000."></textarea>
+  <label for="file">Or upload a text file</label>
+  <input id="file" name="file" type="file" accept=".txt,.json,text/plain">
+  <button class="{% if waiting and who.role == 'buyer' and not blocked %}{% else %}primary{% endif %}" type="submit">Preview</button>
+</form>
+{% if waiting %}
+<section class="card">
+  <h2>Preview {{ waiting.version }}</h2>
+  <ul>
+    {% for note in waiting._notes %}
+    <li>{{ note }}</li>
+    {% endfor %}
+  </ul>
+  {% if who.role == 'buyer' and not blocked %}
+  <form method="post" action="/policy/approve">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <button class="primary" type="submit">Approve</button>
+  </form>
+  {% elif blocked %}
+  <p>Approval stays closed until the change includes an effective date.</p>
+  {% else %}
+  <p>A buyer has to approve this before it applies.</p>
+  {% endif %}
+</section>
+{% endif %}
+<h2>Versions</h2>
+<ul>
+  {% for policy in history %}
+  <li>{{ policy.version }} · {{ policy.effective_from }} · {{ policy.status }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

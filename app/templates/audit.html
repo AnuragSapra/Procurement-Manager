@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Audit · Corvo{% endblock %}
+{% block body %}
+<h1>Audit</h1>
+<p class="lede">Sign-ins, refusals, approvals, overrides, policy changes, and contracts.</p>
+<table>
+  <thead>
+    <tr>
+      <th>When</th>
+      <th>Person</th>
+      <th>Role</th>
+      <th>Action</th>
+      <th>Detail</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+    <tr>
+      <td>{{ row.at }}</td>
+      <td>{{ row.actor }}</td>
+      <td>{{ row.role }}</td>
+      <td>{{ row.action }}</td>
+      <td>{{ row.detail }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

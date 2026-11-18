@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Sign in · Corvo{% endblock %}
+{% block body %}
+<section class="stack">
+  <h1>Sign in</h1>
+  <p class="lede">Choose your name and enter your password. The role stays with that person.</p>
+  <form method="post" action="/who" class="stack">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="name">Name</label>
+    <select id="name" name="name" data-primary-field required>
+      <option value="">Choose your name</option>
+      {% for person in people %}
+      <option value="{{ person.name }}">{{ person.name }} · {{ person.role }}</option>
+      {% endfor %}
+    </select>
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" autocomplete="current-password" required>
+    <button class="primary" type="submit">Sign in</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Chat · Corvo{% endblock %}
+{% block body %}
+<section class="chat-column">
+  <h1>Raise a requisition</h1>
+  <p class="lede">Say what you need, how many, which plant, and when. A date can be 20/11/2026 or Friday. Each person has their own conversation.</p>
+  <ol class="transcript">
+    {% for message in messages %}
+    <li class="{{ message.role }}">{{ message.text }}</li>
+    {% else %}
+    <li class="assistant">Hello. Tell me what you need, or say help.</li>
+    {% endfor %}
+  </ol>
+  <form method="post" action="/chat" class="composer">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label class="sr" for="message">Message</label>
+    <textarea id="message" name="message" rows="4" data-primary-field placeholder="For example: 10 gloves at Bhosari on 20/11/2026" required></textarea>
+    <button class="primary" type="submit">Send</button>
+  </form>
+</section>
+{% endblock %}

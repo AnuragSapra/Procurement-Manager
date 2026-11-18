@@ -1,0 +1,17 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+*.db
+.venv/
+
+notes/
+tests/
+tools/
+.cursor/
+*.pdf
+*.csv
+APPROACH.md
+DECISIONS.md
+README.txt
+pytest.ini
+render.yaml

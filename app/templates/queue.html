@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Queue · Corvo{% endblock %}
+{% block body %}
+<h1>Buyer queue</h1>
+{% if cards and cards[0].status == 'pending' %}
+<p><a class="primary" href="/queue/{{ cards[0].batch_id }}/{{ cards[0].group_id }}">Review next</a></p>
+{% else %}
+<p class="lede">Nothing is waiting.</p>
+{% endif %}
+<table>
+  <thead>
+    <tr>
+      <th>Requirement</th>
+      <th>Item</th>
+      <th>Plant</th>
+      <th>Value</th>
+      <th>Route</th>
+      <th>Supplier</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for card in cards %}
+    <tr>
+      <td class="keep"><a href="/queue/{{ card.batch_id }}/{{ card.group_id }}">{{ card.group_id }}</a></td>
+      <td>{{ card.item_name }}</td>
+      <td class="keep">{{ card.plant }}</td>
+      <td class="keep">{{ card.value|inr }}</td>
+      <td class="keep">{{ card.route }}{% if card.po_id %} · {{ card.po_id }}{% endif %}</td>
+      <td>
+        {% if card.supplier_id %}{{ card.supplier_id }} {{ card.supplier_name }}{% if card.unit_price %} at {{ card.unit_price }}{% endif %}{% endif %}
+        {% if card.suggestions %}<span class="quiet">{{ card.suggestions }}</span>{% endif %}
+      </td>
+      <td>{{ card.status }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if loose %}
+<h2>Not processed</h2>
+<ul>
+  {% for line in loose %}
+  <li>{{ line.pr_no }} / {{ line.pr_line }} · {{ line.reason }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
