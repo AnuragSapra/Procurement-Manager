@@ -1,6 +1,6 @@
 # Approach
 
-The app was written in Cursor, with Grok as the coding assistant. Item matching, policy reading and the purchase decision are ordinary Python. A small intent model, trained in this repo and stored as weights, only decides whether a sentence is conversation, a greeting, a request to clear the chat, or a requisition. It does not choose an item code, a price, or a supplier, and it does not call an external service. A reviewer can run the blind test with no API key.
+The app was written in Cursor, with Grok as the coding assistant. Item matching, policy reading and the purchase decision are ordinary Python. A small intent model stored with the app only classifies the sentence, for example as conversation, a greeting, or a requisition. It does not choose an item code, a price, or a supplier, and it does not call an external service. The blind test needs no API key.
 
 ## Why one process
 
@@ -14,6 +14,6 @@ The ranking weights are in that document too. They were fitted to the worked lis
 
 ## What was checked
 
-The 14 worked decisions are assertions on the sample batch, including club membership, route, supplier, rounded value, suggestion order and the PO numbers those examples name. The three preferred lists are asserted as of 1 November 2026. The contract parser is asserted by reading the ten signed PDFs back to the register, then reading RC-2026-031 and RC-2026-033, which are not in the register.
+The engine was checked against the 14 worked decisions on the sample batch, including club membership, route, supplier, rounded value, suggestion order and the PO numbers those examples name. The three preferred lists were checked as of 1 November 2026. The ten signed PDFs were read back against the contract register, and RC-2026-031 and RC-2026-033, which are not in the register, were read from the PDFs.
 
-The PDF text extractor is local. The contracts are Chromium PDFs with subset fonts, not scans. No external PDF service is used.
+Contract text is extracted locally. No external PDF service is used.

@@ -1,6 +1,6 @@
 # Decisions
 
-The procurement policy does not cover every row in the data. These are the choices the app implements. The same notes, with links between them, are in the Obsidian vault under `notes/`.
+The procurement policy does not cover every row in the data. These are the choices the app implements.
 
 ## How a line becomes a decision
 
@@ -18,7 +18,7 @@ The word "urgent" in a description does not make the line an emergency. Only the
 
 ## Chat
 
-Chat is a parser. It can greet you, and it asks for one missing fact at a time: the item, the quantity, the plant, the need-by date, and an estimate when nothing in the item master matches. A greeting or a stray word is not an item, so it does not answer those with "how many?". "Bhosari", "PUN" and "PUN1" are the Bhosari plant. "Chakan", "CHK" and "CHK1" are the Chakan plant. A near miss such as "chaka" asks whether that means CHK1, and the item already chosen is kept. "Pune" on its own is ambiguous, because both plants are in the Pune area, so the assistant asks which one. A plant code that is not PUN1 or CHK1, such as PUJ1 or PUN2, is refused. Need-by dates can be `20/11/2026`, `20-11-2026`, `2026-11-20`, `20 Nov 2026`, `Nov 20`, a weekday such as Friday, "next Friday", "tomorrow" (also "tommorow" and "tmrw"), "today", "asap", "in 3 days", "in two weeks", "next month", or "end of the month". A short answer that is not a plant or a date does not replace the item. "Next Friday" is the coming Friday, or seven days ahead when today is already Friday. A bare weekday means the coming day, including today when today is that day. Each person in the header has a separate conversation. A chat PR is numbered `PR-CHAT-#####` and is clubbed only with other chat PRs.
+The assistant asks for one missing fact at a time: the item, the quantity, the plant, the need-by date, and an estimate when nothing in the item master matches. A greeting or a stray word is not turned into an item. "Bhosari", "PUN" and "PUN1" are the Bhosari plant. "Chakan", "CHK" and "CHK1" are the Chakan plant. A near miss such as "chaka" asks whether that means CHK1, and the item already chosen is kept. "Pune" on its own is ambiguous, because both plants are in the Pune area, so the assistant asks which one. A plant code that is not PUN1 or CHK1 is refused. A date can be a calendar date, a weekday, tomorrow, or next Friday. Next Friday is the coming Friday, or seven days ahead when today is already Friday. A short answer that is not a plant or a date does not replace the item. Each person has a separate conversation. A chat PR is numbered `PR-CHAT-#####` and is clubbed only with other chat PRs.
 
 ## Lines that are not processed
 
@@ -61,7 +61,7 @@ The unit price printed on a PO is not always that valuation price.
 
 Example 6 is the proof. VCI bags, 7,370 at Pune, value ₹1,56,170. That is 7,370 × 21.19, and 21.19 is Zerust's PO on 19 June 2026, the latest purchase of the item. The supplier named in the example is Vardhman (S027), whose own last price is 21.59, which rounds to the ₹22 in the prose. The export therefore has supplier `S027`, unit price `21.59`, and group value `156170`.
 
-"In the 365 days before the requirement date" does not include the requirement date. PO history ends on 28 October 2026, so the sample never sits on that boundary. The same exclusive end is used for the 548-day preferred-supplier window.
+"In the 365 days before the requirement date" does not include the requirement date. The same exclusive end is used for the 548-day preferred-supplier window.
 
 Blocked and Inactive suppliers are ignored for this history, for valuation, and for suggestions. Example 10 depends on it: aluminium plate's only contract is with Blocked S004, the item has no Active purchase in the last year, and the value is the standard price, 220 × 365 = 80,300.
 
@@ -112,7 +112,7 @@ PO routes are combined when the supplier, plant and route match and the later re
 
 A quantity of zero is not a requirement. `PR-26-00172` asks for 0 cutting wheels and is `NOT_PROCESSED`. Leaving it in would open an empty PO and shift every later number.
 
-`PR-26-00174` and `PR-26-00175` are the earliest lines in the batch: two servo drives at Pune, four minutes apart, same need-by. They club. The value is about ₹1,31,676, there is purchase history, and there is no contract, so the route is a spot PO. That PO is `PO-0001`. The worked examples print `PO-0001` on the hydraulic-oil buy, which starts half an hour later, and every later example number is one lower than this run. The gaps between those examples are the same either way: the two hex-bolt requirements still share one PO, and the hose PO is still the one just before the oil-seal PO. The engine keeps the servo PO. Dropping it would be ignoring two real lines in order to copy the pamphlet's numbering.
+`PR-26-00174` and `PR-26-00175` are the earliest lines in the batch: two servo drives at Pune, four minutes apart, same need-by. They club. The value is about ₹1,31,676, there is purchase history, and there is no contract, so the route is a spot PO. That PO is `PO-0001`. The worked examples print `PO-0001` on the hydraulic-oil buy, which starts half an hour later, so every later example number is one lower than this run. The gaps between those examples are the same: the two hex-bolt requirements still share one PO, and the hose PO is still the one just before the oil-seal PO. The engine keeps the servo lines. Dropping them would ignore two real lines in order to copy the numbering in the worked examples.
 
 ## Policy changes
 
@@ -128,7 +128,7 @@ The amendment's effective date is mandatory. Lines earlier than that date stay o
 
 ## Who is acting
 
-Sign-in is its own page. The person chooses a name and enters a password. The role is stored with the person, not sent by the form. A session with only a name is not signed in. A. Kulkarni uses `bhosari-stores`, M. Shaikh uses `chakan-line`, and R. Deshmukh uses `buyer-desk`. Sign out clears the session. A successful sign-in writes a new one and keeps that person's chat. Approvals, overrides, policy activation, added contracts, sign-ins, and refused sign-ins record the name and the time. A requester cannot approve, run a batch, or read the audit log. The person who raised a requirement cannot release it.
+The role is stored with the person and is never taken from the form. A requester can raise a requisition. Only a buyer can run a batch, approve or override a requirement, approve a policy, add a contract, or read the audit log. The person who raised a requirement cannot release it. Approvals, overrides, policy activation, added contracts, and sign-ins record the name and the time.
 
 ## Money
 
