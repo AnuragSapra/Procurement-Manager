@@ -100,7 +100,9 @@ The same score reproduces the three published lists as of 1 Nov 2026 and the sug
 
 Suggestions walk that list, then add other Active suppliers in the item's category. The fill is ordered by on-time percent times quality rating, then supplier id. That order is S003, S002, S005 for aluminium (example 10, no Active history) and S017, S019, S018 after Vertex for the encoder. If fewer than three or five Active suppliers exist, only those that exist are suggested. The encoder RFP names four because only four Active electrical suppliers exist.
 
-Reference price is the supplier's latest PO for the item in the 548 days. If they have none, it is the rate on their most recent contract for the item.
+Reference price is the supplier's latest PO for the item in the 548 days. If they have none, it is the rate on the contract with the latest start date. A supplier who qualifies only through a contract has a purchase count of 0 and recency 0. When two purchases fall on the same day, the higher PO number is the later one. That chooses the reference price and which purchase sets recency.
+
+The CSV export is the top three suppliers per item, in the columns the brief names. An item with nobody eligible is left out of that file. The preferred page still lists the item and says why.
 
 A spot or emergency rule does not fire when it needs a preferred supplier and the list is empty. The request falls through to the next rule.
 
