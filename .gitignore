@@ -11,8 +11,6 @@ tools/
 .cursor/
 *.pdf
 *.csv
-APPROACH.md
-DECISIONS.md
 README.txt
 pytest.ini
 render.yaml
