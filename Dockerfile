@@ -13,5 +13,6 @@ ENV CORVO_DATA=/srv/data
 ENV CORVO_DB=/srv/db/corvo.db
 
 RUN mkdir -p /srv/db /srv/data
+COPY app/seed/corvo.db /srv/db/corvo.db
 EXPOSE 8000
 CMD ["sh", "-c", "uvicorn corvo.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
