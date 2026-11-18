@@ -40,7 +40,7 @@ A new rule can name facts the engine already computes, including plant, category
 
 Chat collects one request: the item, the quantity, the plant, the need-by date, and, for a new item, an estimated unit price. It asks for one missing fact at a time and asks the person to confirm before the requisition is created.
 
-A local intent model stored with the app only classifies the sentence, for example as conversation, a greeting, or a requisition. It does not choose an item code, a price, or a supplier, and it does not call an external service. Catalogue matching, prices, and suppliers stay in the engine. The blind test needs no API key.
+The chat uses a local intent model whose weights ship with the app in `app/src/corvo/language_model.json`. It is a small logistic model over character and word features. It only classifies the sentence: a requisition, an answer to a question already asked, a greeting, thanks, goodbye, an apology, a request for help, or ordinary conversation. Catalogue matching, quantities, plants, dates, prices, and suppliers stay in the deterministic parser and the engine. The model does not call Grok, or any other external language-model service. The blind test needs no API key.
 
 ## Buyer workspace
 
@@ -60,6 +60,10 @@ The engine was checked against the 14 worked decisions on the sample batch, incl
 
 A second check processes a held-out batch under policy 5.0, then approves an amendment through the app and processes the same batch again. Contract text is extracted locally. No external PDF service is used.
 
-## Tools used to build it
+## Tools used
 
-The application was written in Cursor, with Grok as the coding assistant. The running app does not call a language-model provider. Chat classification and policy reading do not call one.
+AI tools were used to write the application, and one small model runs inside the chat.
+
+**Coding.** The application was written in Cursor. Grok was the coding assistant: reading the policy and the worked examples, editing the engine, the pages, and these notes, and checking the results. No other model is claimed.
+
+**Inside the app.** Chat classification uses the local intent model described above. Policy reading, item matching, valuation, ranking, and the purchase decision do not use a language model. The running app has no language-model API key and does not call one.
