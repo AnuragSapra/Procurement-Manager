@@ -1,8 +1,6 @@
 **/__pycache__
 **/.pytest_cache
 **/*.pyc
-**/*.db
-!app/seed/corvo.db
 .git
 notes
 agent-transcripts
