@@ -95,6 +95,289 @@ The brief requires new rules without a code change. It does not specify the file
 
 **Consequence.** An amendment dated on the same day as version 5.0 replaces it for requirements on or after that day. Lines earlier than the effective date stay on the previous version. A rule that asks for a spot or emergency order still needs a preferred supplier, or it does not fire.
 
+Please paste any new policy amendment in this format.
+
+```json
+{
+  "title": "policy amendment",
+  "version": "5.1",
+  "effective_from": "2026-12-01",
+  "parameters": {
+    "club_window_days": 14,
+    "need_by_window_days": 7,
+    "history_days": 365,
+    "preferred_lookback_days": 548,
+    "recency_recent_days": 90,
+    "recency_year_days": 365,
+    "po_consolidation_hours": 24,
+    "emergency_max": 500000,
+    "spot_max": 200000,
+    "rfq_max": 800000,
+    "suggest_rfq": 3,
+    "suggest_rfp": 5,
+    "suggest_capex": 5,
+    "rank_po_weight": 100,
+    "rank_recency_weight": 500,
+    "rank_contract_weight": 200,
+    "rank_ontime_weight": 0.1,
+    "rank_quality_weight": 1
+  },
+  "rules": [
+    {
+      "id": "1.2",
+      "when": {
+        "all": [
+          {
+            "fact": "item_is_new",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      },
+      "outcome": {
+        "decision": "SOURCING_REQUEST",
+        "route": "NEW_ITEM_SOURCING",
+        "supplier": "none",
+        "price": "estimate",
+        "suggest": 0
+      }
+    },
+    {
+      "id": "5.1",
+      "when": {
+        "all": [
+          {
+            "fact": "item_type",
+            "op": "eq",
+            "value": "Capex"
+          }
+        ]
+      },
+      "outcome": {
+        "decision": "SOURCING_REQUEST",
+        "route": "CAPEX_SOURCING",
+        "supplier": "none",
+        "price": "none",
+        "suggest_from": "suggest_capex"
+      }
+    },
+    {
+      "id": "5.2",
+      "when": {
+        "all": [
+          {
+            "fact": "contract_usable",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      },
+      "outcome": {
+        "decision": "PO",
+        "route": "CONTRACT_PO",
+        "supplier": "contract",
+        "price": "contract_rate",
+        "suggest": 0
+      }
+    },
+    {
+      "id": "5.2A",
+      "when": {
+        "all": [
+          {
+            "fact": "plant",
+            "op": "eq",
+            "value": "CHK1"
+          },
+          {
+            "fact": "category",
+            "op": "eq",
+            "value": "Electrical Spares"
+          },
+          {
+            "fact": "value",
+            "op": "gte",
+            "value_from": "rfq_max"
+          }
+        ]
+      },
+      "outcome": {
+        "decision": "SOURCING_REQUEST",
+        "route": "RFP",
+        "supplier": "none",
+        "price": "none",
+        "suggest_from": "suggest_rfp"
+      }
+    },
+    {
+      "id": "5.2B",
+      "when": {
+        "all": [
+          {
+            "fact": "plant",
+            "op": "eq",
+            "value": "CHK1"
+          },
+          {
+            "fact": "category",
+            "op": "eq",
+            "value": "Electrical Spares"
+          },
+          {
+            "fact": "value",
+            "op": "gte",
+            "value": 50000
+          },
+          {
+            "fact": "value",
+            "op": "lt",
+            "value_from": "rfq_max"
+          }
+        ]
+      },
+      "outcome": {
+        "decision": "SOURCING_REQUEST",
+        "route": "RFQ",
+        "supplier": "none",
+        "price": "none",
+        "suggest_from": "suggest_rfq"
+      }
+    },
+    {
+      "id": "5.3",
+      "when": {
+        "all": [
+          {
+            "fact": "urgency",
+            "op": "eq",
+            "value": "Emergency"
+          },
+          {
+            "fact": "value",
+            "op": "lte",
+            "value_from": "emergency_max"
+          },
+          {
+            "fact": "bought_recently",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "fact": "has_preferred",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      },
+      "outcome": {
+        "decision": "PO",
+        "route": "EMERGENCY_PO",
+        "supplier": "preferred_1",
+        "price": "reference_price",
+        "suggest": 0
+      }
+    },
+    {
+      "id": "5.4A",
+      "when": {
+        "all": [
+          {
+            "fact": "category",
+            "op": "eq",
+            "value": "Packaging"
+          },
+          {
+            "fact": "value",
+            "op": "gte",
+            "value": 100000
+          },
+          {
+            "fact": "value",
+            "op": "lt",
+            "value_from": "rfq_max"
+          }
+        ]
+      },
+      "outcome": {
+        "decision": "SOURCING_REQUEST",
+        "route": "RFQ",
+        "supplier": "none",
+        "price": "none",
+        "suggest_from": "suggest_rfq"
+      }
+    },
+    {
+      "id": "5.4",
+      "when": {
+        "all": [
+          {
+            "fact": "value",
+            "op": "lt",
+            "value_from": "spot_max"
+          },
+          {
+            "fact": "bought_recently",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "fact": "has_preferred",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      },
+      "outcome": {
+        "decision": "PO",
+        "route": "SPOT_PO",
+        "supplier": "preferred_1",
+        "price": "reference_price",
+        "suggest": 0
+      }
+    },
+    {
+      "id": "5.5",
+      "when": {
+        "all": [
+          {
+            "fact": "value",
+            "op": "lt",
+            "value_from": "rfq_max"
+          }
+        ]
+      },
+      "outcome": {
+        "decision": "SOURCING_REQUEST",
+        "route": "RFQ",
+        "supplier": "none",
+        "price": "none",
+        "suggest_from": "suggest_rfq"
+      }
+    },
+    {
+      "id": "5.6",
+      "when": {
+        "all": [
+          {
+            "fact": "value",
+            "op": "gte",
+            "value_from": "rfq_max"
+          }
+        ]
+      },
+      "outcome": {
+        "decision": "SOURCING_REQUEST",
+        "route": "RFP",
+        "supplier": "none",
+        "price": "none",
+        "suggest_from": "suggest_rfp"
+      }
+    }
+  ],
+  "status": "pending"
+}
+```
+
 ## D-010 Suggestions and the preferred export
 
 Clause 6.4 asks for suggestions when the preferred list is short. The brief asks for a top-three CSV.
